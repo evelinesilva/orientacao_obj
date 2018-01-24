@@ -17,6 +17,11 @@
       $password = "senha";
       $dbname = "Verao";
 
+      $cliente = new Cliente();
+
+      $cliente->nome = $_POST['nome'];
+      $cliente->email = $_POST['email'];
+
       //criando uma conexão
       $conn = new mysqli( $servername, $username, $password, $dbname );
 
@@ -25,18 +30,19 @@
       }
       echo "Conectado com sucesso".PHP_EOL;
 
-      $cliente = new Cliente();
-      $cliente->nome =$_POST['nome'];
-      $cliente->email =$_POST['email'];
+      //$comando = $conn->prepare($sql);
+      $stmt = $conn->prepare("INSERT INTO clientes (nome, email) values (?, ?)");
+      $stmt->bind_param("ss", $cliente->nome, $cliente->email);
 
-      $sql = "INSERT INTO clientes (nome, email) values ('$cliente->nome', '$cliente->email')";
 
-      if ($conn->query($sql) === TRUE) {
-        echo "Sucesso";
-      } else {
-        echo "Erro:". $sql . "<br>". $conn->error;
-      }
+      $stmt->execute();
 
+      // if ($conn->query($sql) === TRUE) {
+      //   echo "Sucesso";
+      // } else {
+      //   echo "Erro:". $sql . "<br>". $conn->error;
+      // }
+      $stmt->close();
       $conn->close();
 
      ?>
